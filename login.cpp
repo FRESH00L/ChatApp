@@ -18,14 +18,17 @@ Login::~Login()
 
 void Login::on_signInPushButton_clicked()
 {
+    qDebug() << "info - Funkcja signIn - Open";
     m_usernameLogin = ui->usernameLoginLineEdit->text();
     m_passwordLogin = ui->passwordLoginLineEdit->text();
 
     DataBase db;
     if(db.openconnection())
     {
+        qDebug() << "info - if: db.openconnection - OK";
         if(db.checkLogin(m_usernameLogin, m_passwordLogin))
         {
+            qDebug() << "info - proper user - OK";
             QMessageBox::information(this, "Login", "Zalogowano pomyślnie.");
             QSqlQuery query("SELECT * FROM users");
 
@@ -36,11 +39,9 @@ void Login::on_signInPushButton_clicked()
                     qDebug() << "Użytkownik:" << username << ", Hasło:" << password;
                 }
             } else {
-                qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
+                qDebug() << "! -- Błąd zapytania SQL:" << query.lastError().text();
             }
-
-            QMainWindow mainwindow;
-            mainwindow.show();
+            chatWindow.show();
             close();
         }
         else
@@ -56,15 +57,18 @@ void Login::on_signInPushButton_clicked()
 
 void Login::on_signUpPushButton_clicked()
 {
-    qDebug() << "on_signUpPushButton...";
+    qDebug() << "info - signUp - Open";
+
     m_usernameLogin = ui->usernameRegistepLineEdit->text();
     m_passwordLogin = ui->passwordLoginLineEdit->text();
 
     DataBase db;
     if(db.openconnection())
     {
-        if(m_passwordLogin == ui->checkPasswordLineEdit->text())
+        qDebug() << "info - if: db.openconnection - OK";
+        if(ui->passwordRegisterLineEdit->text() == ui->checkPasswordLineEdit->text())
         {
+            qDebug() << "info - if: password ok? - OK";
             db.addUser(m_usernameLogin, m_passwordLogin);
             QSqlQuery query("SELECT * FROM users");
             if (query.exec()) {
@@ -76,8 +80,7 @@ void Login::on_signUpPushButton_clicked()
             } else {
                 qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
             }
-            QMainWindow *mainwindow = new QMainWindow;
-            mainwindow->show();
+            chatWindow.show();
             close();
         }
         else

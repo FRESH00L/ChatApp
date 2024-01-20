@@ -15,11 +15,13 @@ SOURCES += \
     chat.cpp \
     message.cpp
 
+
 HEADERS += \
     chat.h \
     database.h \
     login.h \
     message.h
+
 
 FORMS += \
     chat.ui \

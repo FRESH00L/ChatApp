@@ -2,6 +2,7 @@
 #define LOGIN_H
 
 #include <QMainWindow>
+#include "chat.h"
 
 namespace Ui {
 class Login;
@@ -24,7 +25,7 @@ private:
     Ui::Login *ui;
     QString m_usernameLogin;
     QString m_passwordLogin;
-
+    Chat chatWindow;
 };
 
 #endif // LOGIN_H
