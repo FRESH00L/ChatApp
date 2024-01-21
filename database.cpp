@@ -1,4 +1,5 @@
 #include "database.h"
+#include <QCryptographicHash>
 
 DataBase::DataBase(QObject *parent)
     : QObject{parent}
@@ -37,16 +38,33 @@ bool DataBase::openconnection()
     }
 }
 
+
+void DataBase::addUser(QString _user, QString _password)
+{
+    qDebug() << "info - Funkcja addUser - Open";
+    qDebug() << _user << " " << _password;
+    QByteArray hashedPassword = QCryptographicHash::hash(_password.toUtf8(), QCryptographicHash::Sha256).toHex();
+    QSqlQuery query;
+    query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT)");
+    query.prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+    query.bindValue(":username", _user);
+    query.bindValue(":password", hashedPassword);
+    if (!query.exec()) {
+        qDebug() << "! -- Błąd dodawania użytkownika do bazy danych:" << query.lastError().text();
+    }
+    qDebug() << "info - Funkcja addUser - Close";
+}
+
 bool DataBase::checkLogin(QString _username, QString _password)
 {
     qDebug() << "info - Funkcja checkLogin - Open";
+    QByteArray hashedPassword = QCryptographicHash::hash(_password.toUtf8(), QCryptographicHash::Sha256).toHex();
     QSqlQuery query;
     query.prepare("SELECT * FROM users WHERE username = :username AND password = :password");
     query.bindValue(":username", _username);
-    query.bindValue(":password",_password);
+    query.bindValue(":password",hashedPassword);
     if(query.exec() && query.next())
     {
-
         qDebug() << "info - Funkcja checkLogin - Close";
         return true;
     }
@@ -57,21 +75,3 @@ bool DataBase::checkLogin(QString _username, QString _password)
     }
 
 }
-
-
-void DataBase::addUser(QString _user, QString _password)
-{
-
-    qDebug() << "info - Funkcja addUser - Open";
-    qDebug() << _user << " " << _password;
-    QSqlQuery query;
-    query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT)");
-    query.prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
-    query.bindValue(":username", _user);
-    query.bindValue(":password", _password);
-    if (!query.exec()) {
-        qDebug() << "! -- Błąd dodawania użytkownika do bazy danych:" << query.lastError().text();
-    }
-    qDebug() << "info - Funkcja addUser - Close";
-}
-
