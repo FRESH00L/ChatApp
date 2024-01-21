@@ -13,6 +13,69 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/* Apply a background color to the central widget */
+QWidget#centralwidget {
+    background-color: #FFE4B5;
+}
+
+/* Style the QLineEdit for username in the Login section */
+QLineEdit#usernameLoginLineEdit,
+QLineEdit#passwordLoginLineEdit,
+QLineEdit#usernameRegisterLineEdit,
+QLineEdit#passwordRegisterLineEdit,
+QLineEdit#checkPasswordLineEdit {
+    background-color: #C0C0C0;
+    border: 1px solid #808080;
+    width: 40%;
+    height: 5%;
+}
+
+/* Style the QPushButton for Sign In in the Login section */
+QPushButton#signInPushButton,
+QPushButton#signUpPushButton {
+    background-color: #1E90FF;
+    color: #ffffff;
+    border: none;
+    padding: 1% 2%;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2%;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Style the QLabel for additional information in the Login section */
+QLabel#label,
+QLabel#label_2 {
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Style the QCheckBox for Show Password in the Register section */
+QCheckBox#showPasswordCheckBox {
+    color: #333333;
+}
+
+/* Apply a background color to the central widget */
+QWidget#centralwidget {
+    background-color: #FFE4B5;
+}
+
+/* Style the QMenuBar */
+QMenuBar#menubar {
+    background-color: #B0C4DE;
+    border: 1px solid #4682B4;
+}
+
+/* Style the QStatusBar */
+QStatusBar#statusbar {
+    background-color: #B0C4DE;
+    border: 1px solid #4682B4;
+}
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="usernameLoginLineEdit">
     <property name="geometry">
@@ -28,13 +91,20 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>60</y>
-      <width>51</width>
-      <height>31</height>
+      <y>50</y>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="text">
-     <string>Login</string>
+     <string>Login:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -56,7 +126,7 @@
       <x>80</x>
       <y>160</y>
       <width>80</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -67,13 +137,20 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>60</y>
-      <width>51</width>
-      <height>31</height>
+      <y>50</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>20</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="text">
-     <string>Register</string>
+     <string>Register:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -115,7 +192,7 @@
       <x>320</x>
       <y>190</y>
       <width>80</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -125,7 +202,7 @@
    <widget class="QCheckBox" name="showPasswordCheckBox">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>70</x>
       <y>220</y>
       <width>161</width>
       <height>22</height>
@@ -142,7 +219,7 @@
      <x>0</x>
      <y>0</y>
      <width>478</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

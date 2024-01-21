@@ -13,6 +13,12 @@ DataBase::DataBase(QObject *parent)
     qDebug()<<"info - Konstruktor DataBase - Close";
 }
 
+QString DataBase::getCurrentUsername() const
+{
+    qDebug() << "info - getCurrentUsername - Returning: " << currentUsername;
+    return currentUsername;
+}
+
 void DataBase::closeconnection()
 {
     db.close();
@@ -55,7 +61,7 @@ void DataBase::addUser(QString _user, QString _password)
     qDebug() << "info - Funkcja addUser - Close";
 }
 
-bool DataBase::checkLogin(QString _username, QString _password)
+bool DataBase::checkLogin(const QString& _username, const QString& _password)
 {
     qDebug() << "info - Funkcja checkLogin - Open";
     QByteArray hashedPassword = QCryptographicHash::hash(_password.toUtf8(), QCryptographicHash::Sha256).toHex();
@@ -65,6 +71,7 @@ bool DataBase::checkLogin(QString _username, QString _password)
     query.bindValue(":password",hashedPassword);
     if(query.exec() && query.next())
     {
+        currentUsername = _username;qDebug() << "info - Funkcja checkLogin - Username set: " << currentUsername;
         qDebug() << "info - Funkcja checkLogin - Close";
         return true;
     }
@@ -75,3 +82,4 @@ bool DataBase::checkLogin(QString _username, QString _password)
     }
 
 }
+

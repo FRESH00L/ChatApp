@@ -6,6 +6,7 @@
 #include <QtNetwork/QTcpSocket>
 #include <QDataStream>
 #include "message.h"
+#include "database.h"
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -39,5 +40,6 @@ private:
     QTcpSocket *socket = nullptr;
     QTcpServer * server = nullptr;
     QList<Message*> listOfMessages;
+    DataBase database;
 };
 #endif // CHAT_H

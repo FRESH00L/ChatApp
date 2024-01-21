@@ -10,6 +10,7 @@ Login::Login(QWidget *parent)
 {
     ui->setupUi(this);
     connect(ui->showPasswordCheckBox, &QCheckBox::toggled, this, &Login::on_showPasswordCheckBox_toggled);
+    setFixedSize(size());
 }
 
 Login::~Login()

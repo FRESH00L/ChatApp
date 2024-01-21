@@ -6,6 +6,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 
+class Login;
 class DataBase : public QObject
 {
     Q_OBJECT
@@ -15,10 +16,12 @@ public:
     bool openconnection();
     void closeconnection();
     void addUser(QString,QString);
-    bool checkLogin(QString,QString);
+    bool checkLogin(const QString& _username, const QString& _password);
+    QString getCurrentUsername() const;
 private:
-
+    QString currentUsername;
     QSqlDatabase db;
+
 
 signals:
 };

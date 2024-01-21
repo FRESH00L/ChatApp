@@ -3,27 +3,25 @@
 
 #include <QObject>
 #include <QDateTime>
-#include <QString>
 
 class Message : public QObject
 {
     Q_OBJECT
 public:
     explicit Message(QObject *parent = nullptr);
-    void setUsername(QString);
-    void setDateTime(QDateTime);
-    void setMessage(QString);
-    QString getUsername();
-    QString getDate();
-    QString getTime();
-    QString getMessage();
+
+    void setUsername(const QString &_username);
+    void setDateTime(const QDateTime &_datetime);
+    void setMessage(const QString &_message);
+
+    QString getUsername() const;
+    QString getDateTimeString() const;
+    QString getMessage() const;
 
 private:
     QString m_username;
-    QString m_date;
-    QString m_time;
+    QDateTime m_datetime;
     QString m_message;
-signals:
 };
 
 #endif // MESSAGE_H

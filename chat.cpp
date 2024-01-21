@@ -26,18 +26,27 @@ void Chat::sendMessage()
     Message* message = new Message();
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
+
     QString newMessage = ui->message->toPlainText();
     message->setMessage(newMessage);
     message->setDateTime(QDateTime::currentDateTime());
+
+    // Set the username from the database
+    message->setUsername(database.getCurrentUsername());qDebug() << "Username in sendMessage: " << message->getUsername();
+
     listOfMessages.append(message);
+
     out.setVersion(QDataStream::Qt_5_10);
-    out<<newMessage;
+    out << message->getUsername() << message->getDateTimeString() << newMessage;
+
     socket->write(block);
+
     ui->chat->clear();
-    for(int i =0;i<listOfMessages.size();i++)
+    for (int i = 0; i < listOfMessages.size(); i++)
     {
-        ui->chat->append(listOfMessages.at(i)->getMessage());
-        qDebug()<<i;
+        const Message* msg = listOfMessages.at(i);
+        ui->chat->append(QString("%1 [%2]: %3").arg(msg->getDateTimeString(), msg->getUsername(), msg->getMessage()));
+        qDebug() << i;
     }
     ui->message->clear();
     qDebug() << "sendMessage";
@@ -45,12 +54,12 @@ void Chat::sendMessage()
 
 void Chat::reciveMessage()
 {
-    QString newMessage;
+    QString username, date, time, newMessage;
     qDebug() << "reciveMessage";
     QByteArray block;
     QDataStream in(socket);
-    in>>newMessage;
-    ui->chat->setText(newMessage);
+    in >> username >> date >> time >> newMessage;
+    ui->chat->append(QString("%1 [%2]: %3").arg(date, time, username, newMessage));
 }
 
 void Chat::startServer()
@@ -61,9 +70,9 @@ void Chat::startServer()
     qDebug() << "server is running on port: " << ui->portTextEdit->toPlainText().toInt();
 }
 
-
 void Chat::on_sendPushButton_clicked()
 {
+    qDebug() << "Current username before sendMessage: " << database.getCurrentUsername();
     sendMessage();
 }
 
@@ -78,4 +87,3 @@ void Chat::on_connectPushButton_clicked()
     startServer();
     connectToServer();
 }
-

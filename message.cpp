@@ -4,39 +4,32 @@ Message::Message(QObject *parent)
     : QObject{parent}
 {}
 
-void Message::setUsername(QString _username)
+void Message::setUsername(const QString &_username)
 {
     m_username = _username;
 }
 
-void Message::setDateTime(QDateTime _datetime)
+void Message::setDateTime(const QDateTime &_datetime)
 {
-    m_date = _datetime.date().toString();
-    m_time = _datetime.time().toString();
+    m_datetime = _datetime;
 }
 
-void Message::setMessage(QString _message)
+void Message::setMessage(const QString &_message)
 {
     m_message = _message;
 }
 
-QString Message::getUsername()
+QString Message::getUsername() const
 {
     return m_username;
 }
 
-QString Message::getDate()
+QString Message::getDateTimeString() const
 {
-    return m_date;
+    return m_datetime.toString("yyyy-MM-dd hh:mm:ss");
 }
 
-QString Message::getTime()
-{
-    return m_time;
-}
-
-
-QString Message::getMessage()
+QString Message::getMessage() const
 {
     return m_message;
 }
