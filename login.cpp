@@ -15,6 +15,14 @@ Login::~Login()
     delete ui;
 }
 
+bool Login::checkIfValid(QString _username, QString _password)
+{
+    QString checkIfBlankUsername = _username.simplified();
+    QString checkIfBlankPassword = _password.simplified();
+    if(checkIfBlankUsername == _username && checkIfBlankPassword == _password && _password.length() > 6)
+        return true;
+    return false;
+}
 
 void Login::on_signInPushButton_clicked()
 {
@@ -60,14 +68,17 @@ void Login::on_signUpPushButton_clicked()
     qDebug() << "info - signUp - Open";
 
     m_usernameLogin = ui->usernameRegistepLineEdit->text();
-    m_passwordLogin = ui->passwordLoginLineEdit->text();
+    m_passwordLogin = ui->passwordRegisterLineEdit->text();
 
+    qDebug()<< m_usernameLogin << " " << m_passwordLogin;
     DataBase db;
     if(db.openconnection())
     {
         qDebug() << "info - if: db.openconnection - OK";
         if(ui->passwordRegisterLineEdit->text() == ui->checkPasswordLineEdit->text())
         {
+            if(checkIfValid(m_usernameLogin, m_passwordLogin))
+            {
             qDebug() << "info - if: password ok? - OK";
             db.addUser(m_usernameLogin, m_passwordLogin);
             QSqlQuery query("SELECT * FROM users");
@@ -82,6 +93,9 @@ void Login::on_signUpPushButton_clicked()
             }
             chatWindow.show();
             close();
+            }
+            else
+                QMessageBox::warning(this,"Register","Niepoprawne Dane");
         }
         else
             QMessageBox::warning(this,"Register","Niepoprawne Dane");

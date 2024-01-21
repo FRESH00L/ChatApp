@@ -39,6 +39,7 @@ void Chat::sendMessage()
         ui->chat->append(listOfMessages.at(i)->getMessage());
         qDebug()<<i;
     }
+    ui->message->clear();
     qDebug() << "sendMessage";
 }
 

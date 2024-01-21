@@ -18,8 +18,8 @@ public:
 
 private slots:
     void on_signInPushButton_clicked();
-
     void on_signUpPushButton_clicked();
+    bool checkIfValid(QString,QString);
 
 private:
     Ui::Login *ui;
