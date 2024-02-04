@@ -1,19 +1,15 @@
 #include "chat.h"
 #include "ui_chat.h"
-#include "message.h"
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
-#include <QDataStream>
 #include <QMessageBox>
-#include <QList>
+#include <QDateTime>
+
 Chat::Chat(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Chat),socket(new QTcpSocket(this)),server(new QTcpServer(this))
+    , ui(new Ui::Chat)
 {
-
     ui->setupUi(this);
-    connect(socket,&QTcpSocket::readyRead, this, &Chat::reciveMessage);
-
+    network = new Network(this);
+    connect(network, &Network::messageReceived, this, &Chat::handleMessageReceived);
 }
 
 Chat::~Chat()
@@ -21,61 +17,38 @@ Chat::~Chat()
     delete ui;
 }
 
-void Chat::sendMessage()
+void Chat::on_startServerButton_clicked()
 {
-    Message* message = new Message();
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    QString newMessage = ui->message->toPlainText();
-    message->setMessage(newMessage);
-    message->setDateTime(QDateTime::currentDateTime());
-    listOfMessages.append(message);
-    out.setVersion(QDataStream::Qt_5_10);
-    out<<newMessage;
-    socket->write(block);
-    ui->chat->clear();
-    for(int i =0;i<listOfMessages.size();i++)
-    {
-        ui->chat->append(listOfMessages.at(i)->getMessage());
-        qDebug()<<i;
-    }
-    ui->message->clear();
-    qDebug() << "sendMessage";
+    network->startServer();
 }
 
-void Chat::reciveMessage()
+void Chat::on_connectButton_clicked()
 {
-    QString newMessage;
-    qDebug() << "reciveMessage";
-    QByteArray block;
-    QDataStream in(socket);
-    in>>newMessage;
-    ui->chat->setText(newMessage);
+    QString ipAddress = ui->IPLineEdit->text();
+    int port = ui->portLineEdit->text().toInt();
+    network->connectToServer(ipAddress, port);
 }
 
-void Chat::startServer()
+QString Chat::formatMessage(const QString &username, const QString &message)
 {
-    if(server->isListening())
-        QMessageBox::warning(this, "Serwer", "Server is already running");
-    connect(server,&QTcpServer::newConnection, this, &Chat::connectToServer);
-    qDebug() << "server is running on port: " << ui->portTextEdit->toPlainText().toInt();
+    QString formattedMessage = QString("[%1 - %2] %3").arg(username).arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")).arg(message);
+    return formattedMessage;
 }
 
-
-void Chat::on_sendPushButton_clicked()
+void Chat::on_sendButton_clicked()
 {
-    sendMessage();
+    QString message = ui->messageLineEdit->text();
+    network->sendMessage(message);
+
+    QString formattedMessage = formatMessage("Ja", message); // Tutaj używamy "Ja" jako nazwy użytkownika dla wysłanych wiadomości
+    ui->chatTextEdit->append(formattedMessage);
+
+    // Czyszczenie pola tekstowego po wysłaniu wiadomości
+    ui->messageLineEdit->clear();
 }
 
-void Chat::connectToServer()
+void Chat::handleMessageReceived(const QString &sender, const QString &message)
 {
-    socket->connectToHost(ui->IPTextEdit->toPlainText(), ui->portTextEdit->toPlainText().toInt());
-    qDebug() << "connected";
+    QString formattedMessage = formatMessage(sender, message);
+    ui->chatTextEdit->append(formattedMessage);
 }
-
-void Chat::on_connectPushButton_clicked()
-{
-    startServer();
-    connectToServer();
-}
-

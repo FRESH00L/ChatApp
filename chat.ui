@@ -6,42 +6,120 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1001</width>
     <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Chat</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">/* Apply a background color to the central widget */
+QWidget#centralwidget {
+    background-color: #FFE4B5;
+}
+
+/* Style the QTextEdit for displaying chat messages */
+QTextEdit#chat {
+    background-color: #FFDAB9;
+    border: 3px solid #FFA500;
+}
+
+/* Style the QTextEdit for entering messages */
+QTextEdit#message {
+    background-color: #C0C0C0;
+    border: 3px solid #808080;
+}
+
+/* Style the QListWidget for displaying the list of users */
+QListWidget#listWidget {
+    background-color: #B0C4DE;
+    border: 3px solid #4682B4;
+}
+
+/* Style the QLabel for additional information */
+QLabel#label {
+    font-weight: bold;
+    color: #333333;
+}
+
+QLabel#label_4 {
+    font-weight: bold;
+    color: #4682B4;
+}
+
+/* Style the QPushButton for sending messages */
+QPushButton#sendPushButton {
+    background-color: #1E90FF;
+    color: #ffffff;
+    border: 3px solid #1E90FF; /* Retain border color similar to background color */
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Style the QTextEdit for entering the IP address */
+QTextEdit#IPTextEdit {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+}
+
+/* Style the QTextEdit for entering the port number */
+QTextEdit#portTextEdit {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+}
+
+/* Style the QLabel for &quot;IP&quot; and &quot;Port&quot; labels */
+QLabel#label_2,
+QLabel#label_3 {
+    color: #333333;
+}
+
+/* Style the QPushButton for connecting */
+QPushButton#connectPushButton {
+    background-color: #1E90FF;
+    color: #ffffff;
+    border: 3px solid #1E90FF; /* Retain border color similar to background color */
+    padding: 8px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="chat">
+   <widget class="QTextEdit" name="chatTextEdit">
     <property name="geometry">
      <rect>
       <x>330</x>
       <y>60</y>
-      <width>431</width>
-      <height>411</height>
+      <width>651</width>
+      <height>371</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QTextEdit" name="message">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>490</y>
-      <width>341</width>
-      <height>41</height>
-     </rect>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>60</y>
-      <width>241</width>
-      <height>371</height>
+      <y>90</y>
+      <width>261</width>
+      <height>341</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -57,37 +135,25 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="sendPushButton">
+   <widget class="QPushButton" name="sendButton">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>490</y>
-      <width>71</width>
-      <height>41</height>
+      <x>870</x>
+      <y>460</y>
+      <width>111</width>
+      <height>71</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>-1</pointsize>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
     </property>
     <property name="text">
-     <string>Wyslij</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="IPTextEdit">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>460</y>
-      <width>104</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="portTextEdit">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>510</y>
-      <width>104</width>
-      <height>31</height>
-     </rect>
+     <string>Wyślij</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
@@ -99,34 +165,137 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>IP</string>
+     <string>IP:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>520</y>
+      <y>510</y>
       <width>49</width>
       <height>16</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>Port</string>
+     <string>Port:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="connectPushButton">
+   <widget class="QPushButton" name="connectButton">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>490</y>
-      <width>75</width>
-      <height>24</height>
+      <x>220</x>
+      <y>450</y>
+      <width>81</width>
+      <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>-1</pointsize>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
     <property name="text">
-     <string>connect</string>
+     <string>Połącz</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>299</x>
+      <y>0</y>
+      <width>31</width>
+      <height>581</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>38</x>
+      <y>20</y>
+      <width>271</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>48</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>APOLLO</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="IPLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>460</y>
+      <width>113</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="portLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>500</y>
+      <width>113</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="messageLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>460</y>
+      <width>531</width>
+      <height>71</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startServerButton">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>500</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="text">
+     <string>Start Server</string>
     </property>
    </widget>
   </widget>
@@ -135,12 +304,11 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>22</height>
+     <width>1001</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

@@ -13,14 +13,14 @@ SOURCES += \
     login.cpp \
     main.cpp \
     chat.cpp \
-    message.cpp
+    network.cpp
 
 
 HEADERS += \
     chat.h \
     database.h \
     login.h \
-    message.h
+    network.h
 
 
 FORMS += \
