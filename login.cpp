@@ -1,4 +1,5 @@
 #include "login.h"
+#include "chat.h"
 #include "ui_login.h"
 #include "database.h"
 #include <QMessageBox>

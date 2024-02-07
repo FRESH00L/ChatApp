@@ -115,7 +115,7 @@ QPushButton#connectPushButton {
       <x>40</x>
       <y>90</y>
       <width>261</width>
-      <height>341</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -147,7 +147,6 @@ QPushButton#connectPushButton {
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>-1</pointsize>
       <underline>false</underline>
       <strikeout>false</strikeout>
      </font>
@@ -206,7 +205,6 @@ QPushButton#connectPushButton {
     <property name="font">
      <font>
       <family>Arial</family>
-      <pointsize>-1</pointsize>
       <underline>false</underline>
       <strikeout>false</strikeout>
      </font>
@@ -298,6 +296,55 @@ QPushButton#connectPushButton {
      <string>Start Server</string>
     </property>
    </widget>
+   <widget class="QTextEdit" name="addNewFriendTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>380</y>
+      <width>104</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addNewFriendPushButton">
+    <property name="geometry">
+     <rect>
+      <x>224</x>
+      <y>383</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>20</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Zalogowano jako:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="usernameLabel">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>30</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -305,7 +352,7 @@ QPushButton#connectPushButton {
      <x>0</x>
      <y>0</y>
      <width>1001</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

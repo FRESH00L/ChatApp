@@ -5,6 +5,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QHostAddress>
+#include <QtNetwork/QNetworkInterface>
 
 class Login;
 class DataBase : public QObject
@@ -18,6 +20,7 @@ public:
     void addUser(QString,QString);
     bool checkLogin(const QString& _username, const QString& _password);
     QString getCurrentUsername() const;
+    QString findNewFriend(QString);
 private:
     QString currentUsername;
     QSqlDatabase db;

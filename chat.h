@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include "network.h"
-
+#include "user.h"
+#include <QListWidgetItem>
 QT_BEGIN_NAMESPACE
 namespace Ui { class Chat; }
 QT_END_NAMESPACE
@@ -23,11 +24,16 @@ private slots:
     void on_sendButton_clicked();
     void handleMessageReceived(const QString &sender, const QString &message);
 
+    void on_addNewFriendPushButton_clicked();
+
+    void on_listWidget_itemClicked(QListWidgetItem *item);
+
 private:
     Ui::Chat *ui;
     Network *network;
     QString m_currentUsername;
     QString formatMessage(const QString &username, const QString &message);
+    QList<User> listOfUsers;
 };
 
 #endif // CHAT_H
