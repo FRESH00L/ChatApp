@@ -1,18 +1,16 @@
 #include "chat.h"
 #include "ui_chat.h"
-#include "message.h"
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
-#include <QDataStream>
 #include <QMessageBox>
-#include <QList>
+#include <QDateTime>
+#include "database.h"
+
 Chat::Chat(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::Chat),socket(new QTcpSocket(this)),server(new QTcpServer(this))
+    , ui(new Ui::Chat)
 {
-
     ui->setupUi(this);
-    connect(socket,&QTcpSocket::readyRead, this, &Chat::reciveMessage);
+    network = new Network(this);
+    connect(network, &Network::messageReceived, this, &Chat::handleMessageReceived);
 
 }
 
@@ -21,61 +19,109 @@ Chat::~Chat()
     delete ui;
 }
 
-void Chat::sendMessage()
+void Chat::setCurrentUsername(const QString &username)
 {
-    Message* message = new Message();
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    QString newMessage = ui->message->toPlainText();
-    message->setMessage(newMessage);
-    message->setDateTime(QDateTime::currentDateTime());
-    listOfMessages.append(message);
-    out.setVersion(QDataStream::Qt_5_10);
-    out<<newMessage;
-    socket->write(block);
-    ui->chat->clear();
-    for(int i =0;i<listOfMessages.size();i++)
+    m_currentUsername = username;
+    ui->usernameLabel->setText(username);
+}
+
+void Chat::on_startServerButton_clicked()
+{
+    network->startServer();
+}
+
+void Chat::on_connectButton_clicked()
+{
+    QString ipAddress = ui->IPLineEdit->text();
+    int port = ui->portLineEdit->text().toInt();
+    network->connectToServer(ipAddress, port);
+}
+
+QString Chat::formatMessage(const QString &username, const QString &message)
+{
+    QString formattedMessage = QString("[%1 - %2] %3").arg(username).arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")).arg(message);
+    return formattedMessage;
+}
+
+void Chat::on_sendButton_clicked()
+{
+    QString message = ui->messageLineEdit->text();
+
+    QString formattedMessage = formatMessage(m_currentUsername, message); // Tutaj używamy "Ja" jako nazwy użytkownika dla wysłanych wiadomości
+    network->sendMessage(formattedMessage);
+    ui->chatTextEdit->append(formattedMessage);
+
+    // Czyszczenie pola tekstowego po wysłaniu wiadomości
+    ui->messageLineEdit->clear();
+}
+
+void Chat::handleMessageReceived(const QString &sender, const QString &message)
+{
+    //QString formattedMessage = formatMessage(m_currentClient, message);
+    qDebug() << sender;
+    ui->chatTextEdit->append(message);
+}
+
+void Chat::on_addNewFriendPushButton_clicked()
+{
+    ui->listWidget->clear();
+    DataBase db;
+    qDebug() << db.getCurrentUsername();
+    QString newFriendUsername = ui->addNewFriendTextEdit->toPlainText();
+    QString newFriendIP = db.findNewFriend(newFriendUsername);
+    qDebug() << newFriendIP;
+    QMessageBox msg;
+    if(newFriendIP == "")
     {
-        ui->chat->append(listOfMessages.at(i)->getMessage());
-        qDebug()<<i;
+        msg.setText("Nie znaleziono takiego uzytkownika");
+        msg.setIcon(QMessageBox::Warning);
+        msg.exec();
     }
-    ui->message->clear();
-    qDebug() << "sendMessage";
+    else
+    {
+    QString information = QString("Dodano uzytkownika %1 o numerze ip: %2 do listy kontaktow").arg(newFriendUsername).arg(newFriendIP);
+    msg.setInformativeText(information);
+    msg.setIcon(QMessageBox::Information);
+    msg.exec();
+
+    User newFriend(newFriendUsername,newFriendIP);
+    bool isOnList = false;
+    for(int j = 0; j<ui->listWidget->count();j++)
+    {
+        QListWidgetItem* Item = ui->listWidget->item(j);
+        if(Item->text() == newFriendUsername)
+            isOnList = true;
+    }
+    if(!isOnList)
+    {
+        listOfUsers.append(newFriend);
+        for(int i =0;i<listOfUsers.size();i++)
+        {
+
+        QString info = listOfUsers.at(i).m_username + ":" + listOfUsers.at(i).m_ip;
+        QListWidgetItem *Item = new QListWidgetItem(info);
+        Item->setData(Qt::UserRole, QVariant::fromValue(listOfUsers.at(i)));
+        ui->listWidget->addItem(Item);
+        ui->listWidget->show();
+        }
+    }
+    }
+    ui->addNewFriendTextEdit->clear();
 }
 
-void Chat::reciveMessage()
+void Chat::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-    QString newMessage;
-    qDebug() << "reciveMessage";
-    QByteArray block;
-    QDataStream in(socket);
-    in>>newMessage;
-    ui->chat->setText(newMessage);
-}
-
-void Chat::startServer()
-{
-    if(server->isListening())
-        QMessageBox::warning(this, "Serwer", "Server is already running");
-    connect(server,&QTcpServer::newConnection, this, &Chat::connectToServer);
-    qDebug() << "server is running on port: " << ui->portTextEdit->toPlainText().toInt();
+    QString selectedItem = item->text();
+    QStringList parts = selectedItem.split(":");
+    QString friendUsername = parts[0];
+    QString friendIP = parts[1];
+    qDebug() << friendUsername << " " <<friendIP;
+    m_currentClient = friendUsername;
+    int port = 1234;
+    network->connectToServer(friendIP, port);
+    ui->chatTextEdit->clear();
 }
 
 
-void Chat::on_sendPushButton_clicked()
-{
-    sendMessage();
-}
 
-void Chat::connectToServer()
-{
-    socket->connectToHost(ui->IPTextEdit->toPlainText(), ui->portTextEdit->toPlainText().toInt());
-    qDebug() << "connected";
-}
-
-void Chat::on_connectPushButton_clicked()
-{
-    startServer();
-    connectToServer();
-}
 

@@ -2,16 +2,12 @@
 #define CHAT_H
 
 #include <QMainWindow>
-#include <QtNetwork/QTcpServer>
-#include <QtNetwork/QTcpSocket>
-#include <QDataStream>
-#include "message.h"
-#include <QList>
-
+#include "network.h"
+#include "user.h"
+#include <QListWidgetItem>
+#include "database.h"
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class Chat;
-}
+namespace Ui { class Chat; }
 QT_END_NAMESPACE
 
 class Chat : public QMainWindow
@@ -21,23 +17,25 @@ class Chat : public QMainWindow
 public:
     Chat(QWidget *parent = nullptr);
     ~Chat();
-
-
-
+    void setCurrentUsername(const QString& username);
 
 private slots:
-    void sendMessage();
-    void reciveMessage();
-    void startServer();
-    void connectToServer();
+    void on_startServerButton_clicked();
+    void on_connectButton_clicked();
+    void on_sendButton_clicked();
+    void handleMessageReceived(const QString &sender, const QString &message);
 
-    void on_sendPushButton_clicked();
-    void on_connectPushButton_clicked();
+    void on_addNewFriendPushButton_clicked();
+
+    void on_listWidget_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::Chat *ui;
-    QTcpSocket *socket = nullptr;
-    QTcpServer * server = nullptr;
-    QList<Message*> listOfMessages;
+    Network *network;
+    QString m_currentClient;
+    QString m_currentUsername;
+    QString formatMessage(const QString &username, const QString &message);
+    QList<User> listOfUsers;
 };
+
 #endif // CHAT_H

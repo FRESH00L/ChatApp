@@ -3,28 +3,36 @@
 
 #include <QMainWindow>
 #include "chat.h"
+#include "database.h"
 
-namespace Ui {
-class Login;
-}
+QT_BEGIN_NAMESPACE
+namespace Ui { class Login; }
+QT_END_NAMESPACE
 
 class Login : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit Login(QWidget *parent = nullptr);
+    Login(QWidget *parent = nullptr);
     ~Login();
+
+signals:
+    void userLoggedIn(const QString& username);
 
 private slots:
     void on_signInPushButton_clicked();
     void on_signUpPushButton_clicked();
-    bool checkIfValid(QString,QString);
+    void on_showPasswordCheckBox_toggled(bool checked);
+    void on_passwordLoginLineEdit_textChanged(const QString &Arg1);
+    void on_passwordRegisterLineEdit_textChanged(const QString &Arg1);
+    void on_checkPasswordLineEdit_textChanged(const QString &Arg1);
 
 private:
     Ui::Login *ui;
     QString m_usernameLogin;
-    QString m_passwordLogin;
+    QString hashPassword(const QString& password);
+    bool checkIfValid(QString _username, QString _password);
     Chat chatWindow;
 };
 
