@@ -18,6 +18,8 @@ public:
     Chat(QWidget *parent = nullptr);
     ~Chat();
     void setCurrentUsername(const QString& username);
+    void setPort(int _port);
+    void startServ(int);
 
 private slots:
     void on_startServerButton_clicked();
@@ -36,6 +38,7 @@ private:
     QString m_currentUsername;
     QString formatMessage(const QString &username, const QString &message);
     QList<User> listOfUsers;
+    int m_port;
 };
 
 #endif // CHAT_H

@@ -8,10 +8,11 @@ Chat::Chat(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Chat)
 {
+    qDebug() << "kostruktor Chat - Open";
     ui->setupUi(this);
     network = new Network(this);
     connect(network, &Network::messageReceived, this, &Chat::handleMessageReceived);
-
+    qDebug() << "kostruktor Chat - Close";
 }
 
 Chat::~Chat()
@@ -25,9 +26,21 @@ void Chat::setCurrentUsername(const QString &username)
     ui->usernameLabel->setText(username);
 }
 
+void Chat::setPort(int _port)
+{
+    m_port = _port;
+    qDebug() << _port;
+}
+
+void Chat::startServ(int _port)
+{
+    network->startServer(_port);
+}
+
 void Chat::on_startServerButton_clicked()
 {
-    network->startServer();
+    qDebug() << m_port;
+    //network->startServer();
 }
 
 void Chat::on_connectButton_clicked()
@@ -111,13 +124,14 @@ void Chat::on_addNewFriendPushButton_clicked()
 
 void Chat::on_listWidget_itemClicked(QListWidgetItem *item)
 {
+    DataBase db;
     QString selectedItem = item->text();
     QStringList parts = selectedItem.split(":");
     QString friendUsername = parts[0];
     QString friendIP = parts[1];
     qDebug() << friendUsername << " " <<friendIP;
     m_currentClient = friendUsername;
-    int port = 1234;
+    int port = db.getPortFromUser(friendUsername);
     network->connectToServer(friendIP, port);
     ui->chatTextEdit->clear();
 }

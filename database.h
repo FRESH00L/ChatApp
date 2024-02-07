@@ -22,6 +22,7 @@ public:
     void addUser(QString,QString);
     bool checkLogin(const QString& _username, const QString& _password);
     QString getCurrentUsername() const;
+    int getPortFromUser(QString);
     QString findNewFriend(QString);
 private:
     QString currentUsername;

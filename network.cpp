@@ -9,9 +9,9 @@ Network::Network(QObject *parent) : QObject(parent)
     connect(tcpServer, &QTcpServer::newConnection, this, &Network::handleNewConnection);
 }
 
-void Network::startServer()
+void Network::startServer(int port)
 {
-    if (!tcpServer->listen(QHostAddress::Any, 1234)) {
+    if (!tcpServer->listen(QHostAddress::Any, port)) {
         qDebug() << "Error: " << tcpServer->errorString();
     } else {
         qDebug() << "Server started";

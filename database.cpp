@@ -20,6 +20,24 @@ QString DataBase::getCurrentUsername() const
     return currentUsername;
 }
 
+int DataBase::getPortFromUser(QString _username)
+{
+
+    QSqlQuery query;
+    query.prepare("SELECT port FROM users WHERE username = :username");
+    query.bindValue(":username",_username);
+    if (query.exec()) {
+        while (query.next()) {
+            int port = query.value("port").toInt();
+            qDebug() << "Port dla użytkownika freshol:" << port;
+            return port;
+        }
+    } else {
+        qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
+    }
+
+}
+
 void DataBase::closeconnection()
 {
     db.close();
@@ -63,12 +81,14 @@ void DataBase::addUser(QString _user, QString _password)
             break;
         }
     }
+    int port = rand()%10000;
     qDebug() << ipAddress;
-    query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, ip TEXT)");
-    query.prepare("INSERT INTO users (username, password, ip) VALUES (:username, :password, :ip)");
+    query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, ip TEXT, port INTEGER)");
+    query.prepare("INSERT INTO users (username, password, ip, port) VALUES (:username, :password, :ip, :port)");
     query.bindValue(":username", _user);
     query.bindValue(":password", hashedPassword);
     query.bindValue(":ip", ipAddress);
+    query.bindValue(":port", port);
 
     if (!query.exec()) {
         qDebug() << "! -- Błąd dodawania użytkownika do bazy danych:" << query.lastError().text();

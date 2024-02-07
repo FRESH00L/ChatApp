@@ -55,13 +55,19 @@ void Login::on_signInPushButton_clicked()
                 while (query.next()) {
                     QString username = query.value("username").toString();
                     QString password = query.value("password").toString();
-                    qDebug() << "Użytkownik:" << username << ", Hasło:" << password;
+                    QString ip = query.value("ip").toString();
+                    int port = query.value("port").toInt();
+                    qDebug() << "Użytkownik: " << username << ", Hasło: " << password << ", IP: " << ip << ", port: " <<port;
+
                 }
             } else {
                 qDebug() << "! -- Błąd zapytania SQL:" << query.lastError().text();
             }
-
+            int port = db.getPortFromUser(m_usernameLogin);
+            qDebug() << m_usernameLogin << port;
+            chatWindow.setPort(port);
             chatWindow.setCurrentUsername(m_usernameLogin);
+            chatWindow.startServ(port);
             chatWindow.show();
             close();
         }
@@ -109,6 +115,11 @@ void Login::on_signUpPushButton_clicked()
                     } else {
                         qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
                     }
+                    int port = db.getPortFromUser(m_usernameLogin);
+                    qDebug() << m_usernameLogin << port;
+                    chatWindow.setPort(port);
+                    chatWindow.setCurrentUsername(m_usernameLogin);
+                    chatWindow.startServ(port);
                     chatWindow.show();
                     close();
                 }
