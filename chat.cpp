@@ -8,16 +8,24 @@ Chat::Chat(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Chat)
 {
-    qDebug() << "kostruktor Chat - Open";
     ui->setupUi(this);
     network = new Network(this);
     connect(network, &Network::messageReceived, this, &Chat::handleMessageReceived);
-    qDebug() << "kostruktor Chat - Close";
 }
 
 Chat::~Chat()
 {
     delete ui;
+}
+
+
+void Chat::setPortAndIP(int _port, QString _ip)
+{
+    m_port = _port;
+    m_ip = _ip;
+    ui->yourIPLabel->setText(_ip);
+    ui->yourPortLabel->setText(QString::number(_port));
+    qDebug() << _port;
 }
 
 void Chat::setCurrentUsername(const QString &username)
@@ -26,21 +34,9 @@ void Chat::setCurrentUsername(const QString &username)
     ui->usernameLabel->setText(username);
 }
 
-void Chat::setPort(int _port)
-{
-    m_port = _port;
-    qDebug() << _port;
-}
-
 void Chat::startServ(int _port)
 {
     network->startServer(_port);
-}
-
-void Chat::on_startServerButton_clicked()
-{
-    qDebug() << m_port;
-    //network->startServer();
 }
 
 void Chat::on_connectButton_clicked()
@@ -52,7 +48,7 @@ void Chat::on_connectButton_clicked()
 
 QString Chat::formatMessage(const QString &username, const QString &message)
 {
-    QString formattedMessage = QString("[%1 - %2] %3").arg(username).arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")).arg(message);
+    QString formattedMessage = QString("%1 [%2]: %3").arg(username).arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")).arg(message);
     return formattedMessage;
 }
 
@@ -60,18 +56,14 @@ void Chat::on_sendButton_clicked()
 {
     QString message = ui->messageLineEdit->text();
 
-    QString formattedMessage = formatMessage(m_currentUsername, message); // Tutaj używamy "Ja" jako nazwy użytkownika dla wysłanych wiadomości
+    QString formattedMessage = formatMessage(m_currentUsername, message);
     network->sendMessage(formattedMessage);
     ui->chatTextEdit->append(formattedMessage);
-
-    // Czyszczenie pola tekstowego po wysłaniu wiadomości
     ui->messageLineEdit->clear();
 }
 
 void Chat::handleMessageReceived(const QString &sender, const QString &message)
 {
-    //QString formattedMessage = formatMessage(m_currentClient, message);
-    qDebug() << sender;
     ui->chatTextEdit->append(message);
 }
 
@@ -79,20 +71,19 @@ void Chat::on_addNewFriendPushButton_clicked()
 {
     ui->listWidget->clear();
     DataBase db;
-    qDebug() << db.getCurrentUsername();
     QString newFriendUsername = ui->addNewFriendTextEdit->toPlainText();
     QString newFriendIP = db.findNewFriend(newFriendUsername);
     qDebug() << newFriendIP;
     QMessageBox msg;
     if(newFriendIP == "")
     {
-        msg.setText("Nie znaleziono takiego uzytkownika");
+        msg.setText("Nie znaleziono takiego użytkownika");
         msg.setIcon(QMessageBox::Warning);
         msg.exec();
     }
     else
     {
-    QString information = QString("Dodano uzytkownika %1 o numerze ip: %2 do listy kontaktow").arg(newFriendUsername).arg(newFriendIP);
+    QString information = QString("Dodano użytkownika %1 o adresie ip: %2 do listy kontaktów").arg(newFriendUsername).arg(newFriendIP);
     msg.setInformativeText(information);
     msg.setIcon(QMessageBox::Information);
     msg.exec();
@@ -111,7 +102,7 @@ void Chat::on_addNewFriendPushButton_clicked()
         for(int i =0;i<listOfUsers.size();i++)
         {
 
-        QString info = listOfUsers.at(i).m_username + ":" + listOfUsers.at(i).m_ip;
+        QString info = listOfUsers.at(i).m_username + ": " + listOfUsers.at(i).m_ip;
         QListWidgetItem *Item = new QListWidgetItem(info);
         Item->setData(Qt::UserRole, QVariant::fromValue(listOfUsers.at(i)));
         ui->listWidget->addItem(Item);
@@ -129,13 +120,11 @@ void Chat::on_listWidget_itemClicked(QListWidgetItem *item)
     QStringList parts = selectedItem.split(":");
     QString friendUsername = parts[0];
     QString friendIP = parts[1];
+    int friendPort = db.getPortFromUser(friendUsername);
     qDebug() << friendUsername << " " <<friendIP;
     m_currentClient = friendUsername;
-    int port = db.getPortFromUser(friendUsername);
-    network->connectToServer(friendIP, port);
+    network->connectToServer(friendIP,friendPort);
     ui->chatTextEdit->clear();
 }
-
-
 
 

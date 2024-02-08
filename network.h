@@ -15,7 +15,7 @@ signals:
     void messageReceived(const QString &sender, const QString &message);
 
 public slots:
-    void startServer(int);
+    void startServer(int port);
     void connectToServer(const QString &ipAddress, int port);
     void sendMessage(const QString &message);
     void handleNewConnection();

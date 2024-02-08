@@ -21,8 +21,8 @@ public:
     void closeconnection();
     void addUser(QString,QString);
     bool checkLogin(const QString& _username, const QString& _password);
-    QString getCurrentUsername() const;
-    int getPortFromUser(QString);
+    int getPortFromUser(QString _username);
+    QString getIPFromUser(QString _username);
     QString findNewFriend(QString);
 private:
     QString currentUsername;

@@ -24,9 +24,9 @@ private slots:
     void on_signInPushButton_clicked();
     void on_signUpPushButton_clicked();
     void on_showPasswordCheckBox_toggled(bool checked);
-    void on_passwordLoginLineEdit_textChanged(const QString &Arg1);
-    void on_passwordRegisterLineEdit_textChanged(const QString &Arg1);
-    void on_checkPasswordLineEdit_textChanged(const QString &Arg1);
+    void on_passwordLoginLineEdit_textChanged();
+    void on_passwordRegisterLineEdit_textChanged();
+    void on_checkPasswordLineEdit_textChanged();
 
 private:
     Ui::Login *ui;

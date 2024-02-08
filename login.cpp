@@ -57,15 +57,16 @@ void Login::on_signInPushButton_clicked()
                     QString password = query.value("password").toString();
                     QString ip = query.value("ip").toString();
                     int port = query.value("port").toInt();
-                    qDebug() << "Użytkownik: " << username << ", Hasło: " << password << ", IP: " << ip << ", port: " <<port;
+                    qDebug() << "Użytkownik: " << username << ", Hasło: " << password << ", IP: " << ip << "PORT: " << port;
 
                 }
             } else {
                 qDebug() << "! -- Błąd zapytania SQL:" << query.lastError().text();
             }
             int port = db.getPortFromUser(m_usernameLogin);
+            QString ip = db.getIPFromUser(m_usernameLogin);
             qDebug() << m_usernameLogin << port;
-            chatWindow.setPort(port);
+            chatWindow.setPortAndIP(port, ip);
             chatWindow.setCurrentUsername(m_usernameLogin);
             chatWindow.startServ(port);
             chatWindow.show();
@@ -77,10 +78,7 @@ void Login::on_signInPushButton_clicked()
     }
     else
         QMessageBox::critical(this,"Login","Błąd połączenia z bazą");
-
 }
-
-
 
 void Login::on_signUpPushButton_clicked()
 {
@@ -94,7 +92,6 @@ void Login::on_signUpPushButton_clicked()
     {
         QString hashedEnteredPassword = hashPassword(enteredPassword);
 
-        QString hashedConfirmPassword = hashPassword(enteredPassword);
         DataBase db;
         if(db.openconnection())
         {
@@ -110,14 +107,17 @@ void Login::on_signUpPushButton_clicked()
                         while (query.next()) {
                             QString username = query.value("username").toString();
                             QString password = query.value("password").toString();
-                            qDebug() << "Użytkownik:" << username << ", Hasło:" << password;
+                            QString ip = query.value("ip").toString();
+                            int port = query.value("port").toInt();
+                            qDebug() << "Użytkownik: " << username << ", Hasło: " << password << ", IP: " << ip << "PORT: " << port;
                         }
                     } else {
                         qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
                     }
                     int port = db.getPortFromUser(m_usernameLogin);
+                    QString ip = db.getIPFromUser(m_usernameLogin);
                     qDebug() << m_usernameLogin << port;
-                    chatWindow.setPort(port);
+                    chatWindow.setPortAndIP(port, ip);
                     chatWindow.setCurrentUsername(m_usernameLogin);
                     chatWindow.startServ(port);
                     chatWindow.show();
@@ -155,17 +155,8 @@ void Login::on_showPasswordCheckBox_toggled(bool checked)
     }
 }
 
-void Login::on_passwordLoginLineEdit_textChanged(const QString &Arg1)
-{
-    ui->passwordLoginLineEdit->setEchoMode(QLineEdit::Password);
-}
+void Login::on_passwordLoginLineEdit_textChanged(){ui->passwordLoginLineEdit->setEchoMode(QLineEdit::Password);}
+void Login::on_passwordRegisterLineEdit_textChanged(){ui->passwordRegisterLineEdit->setEchoMode(QLineEdit::Password);}
+void Login::on_checkPasswordLineEdit_textChanged(){ui->checkPasswordLineEdit->setEchoMode(QLineEdit::Password);}
 
-void Login::on_passwordRegisterLineEdit_textChanged(const QString &Arg1)
-{
-    ui->passwordRegisterLineEdit->setEchoMode(QLineEdit::Password);
-}
 
-void Login::on_checkPasswordLineEdit_textChanged(const QString &Arg1)
-{
-    ui->checkPasswordLineEdit->setEchoMode(QLineEdit::Password);
-}

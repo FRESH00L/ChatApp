@@ -1,5 +1,4 @@
 #include "database.h"
-#include "chat.h"
 #include <QCryptographicHash>
 
 DataBase::DataBase(QObject *parent)
@@ -11,31 +10,7 @@ DataBase::DataBase(QObject *parent)
 
     if(!openconnection())
         qDebug()<<"! -- Błąd połączenia z Bazą Danych " <<db.lastError().text();
-    qDebug()<<"info - Konstruktor DataBase - Close";
-}
-
-QString DataBase::getCurrentUsername() const
-{
-    qDebug() << "info - getCurrentUsername - Returning: " << currentUsername;
-    return currentUsername;
-}
-
-int DataBase::getPortFromUser(QString _username)
-{
-
-    QSqlQuery query;
-    query.prepare("SELECT port FROM users WHERE username = :username");
-    query.bindValue(":username",_username);
-    if (query.exec()) {
-        while (query.next()) {
-            int port = query.value("port").toInt();
-            qDebug() << "Port dla użytkownika freshol:" << port;
-            return port;
-        }
-    } else {
-        qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
-    }
-
+        qDebug()<<"info - Konstruktor DataBase - Close";
 }
 
 void DataBase::closeconnection()
@@ -47,6 +22,41 @@ DataBase::~DataBase()
 {
     closeconnection();
     qDebug() << "info - connection closed";
+}
+
+int DataBase::getPortFromUser(QString _username)
+{
+
+    QSqlQuery query;
+    query.prepare("SELECT port FROM users WHERE username = :username");
+    query.bindValue(":username",_username);
+    if (query.exec()) {
+        while (query.next()) {
+            int port = query.value("port").toInt();
+            qDebug() << "Port dla użytkownika:" << port;
+            return port;
+        }
+    } else {
+        qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
+    }
+
+}
+
+QString DataBase::getIPFromUser(QString _username)
+{
+    QSqlQuery query;
+    query.prepare("SELECT ip FROM users WHERE username = :username");
+    query.bindValue(":username",_username);
+    if (query.exec()) {
+        while (query.next()) {
+            QString ip = query.value("ip").toString();
+            qDebug() << "IP dla użytkownika:" << ip;
+            return ip;
+        }
+    } else {
+        qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
+    }
+
 }
 
 bool DataBase::openconnection()
@@ -66,6 +76,7 @@ bool DataBase::openconnection()
 
 void DataBase::addUser(QString _user, QString _password)
 {
+
     qDebug() << "info - Funkcja addUser - Open";
     qDebug() << _user << " " << _password;
     QByteArray hashedPassword = QCryptographicHash::hash(_password.toUtf8(), QCryptographicHash::Sha256).toHex();
@@ -81,8 +92,10 @@ void DataBase::addUser(QString _user, QString _password)
             break;
         }
     }
-    int port = rand()%10000;
-    qDebug() << ipAddress;
+    int minPort = 49152;
+    int maxPort = 65535;
+    int port = rand() % (maxPort - minPort + 1) + minPort;
+
     query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, ip TEXT, port INTEGER)");
     query.prepare("INSERT INTO users (username, password, ip, port) VALUES (:username, :password, :ip, :port)");
     query.bindValue(":username", _user);
