@@ -51,7 +51,7 @@ void Chat::on_sendButton_clicked()
     ui->messageLineEdit->clear();
 }
 
-void Chat::handleMessageReceived(const QString &message)
+void Chat::handleMessageReceived(const QString &sender, const QString &message)
 {
     ui->chatTextEdit->append(message);
 }

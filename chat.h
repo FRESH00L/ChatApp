@@ -23,7 +23,7 @@ public:
 private slots:
     void on_connectButton_clicked();
     void on_sendButton_clicked();
-    void handleMessageReceived(const QString &message);
+    void handleMessageReceived(const QString &sender, const QString &message);
     void on_addNewFriendPushButton_clicked();
     void on_listWidget_itemClicked(QListWidgetItem *item);
 
