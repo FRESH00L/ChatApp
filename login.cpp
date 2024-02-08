@@ -55,11 +55,16 @@ void Login::on_signInPushButton_clicked()
                 while (query.next()) {
                     QString username = query.value("username").toString();
                     QString password = query.value("password").toString();
-                    qDebug() << "Użytkownik:" << username << ", Hasło:" << password;
+                    QString ip = query.value("ip").toString();
+                    qDebug() << "Użytkownik: " << username << ", Hasło: " << password << ", IP: " << ip;
+
                 }
             } else {
                 qDebug() << "! -- Błąd zapytania SQL:" << query.lastError().text();
             }
+            qDebug() << m_usernameLogin;
+            chatWindow.setCurrentUsername(m_usernameLogin);
+            chatWindow.startServ();
             chatWindow.show();
             close();
         }
@@ -69,10 +74,7 @@ void Login::on_signInPushButton_clicked()
     }
     else
         QMessageBox::critical(this,"Login","Błąd połączenia z bazą");
-
 }
-
-
 
 void Login::on_signUpPushButton_clicked()
 {
@@ -86,7 +88,6 @@ void Login::on_signUpPushButton_clicked()
     {
         QString hashedEnteredPassword = hashPassword(enteredPassword);
 
-        QString hashedConfirmPassword = hashPassword(enteredPassword);
         DataBase db;
         if(db.openconnection())
         {
@@ -107,6 +108,9 @@ void Login::on_signUpPushButton_clicked()
                     } else {
                         qDebug() << "Błąd zapytania SQL:" << query.lastError().text();
                     }
+                    qDebug() << m_usernameLogin;
+                    chatWindow.setCurrentUsername(m_usernameLogin);
+                    chatWindow.startServ();
                     chatWindow.show();
                     close();
                 }
@@ -142,17 +146,8 @@ void Login::on_showPasswordCheckBox_toggled(bool checked)
     }
 }
 
-void Login::on_passwordLoginLineEdit_textChanged(const QString &Arg1)
-{
-    ui->passwordLoginLineEdit->setEchoMode(QLineEdit::Password);
-}
+void Login::on_passwordLoginLineEdit_textChanged(){ui->passwordLoginLineEdit->setEchoMode(QLineEdit::Password);}
+void Login::on_passwordRegisterLineEdit_textChanged(){ui->passwordRegisterLineEdit->setEchoMode(QLineEdit::Password);}
+void Login::on_checkPasswordLineEdit_textChanged(){ui->checkPasswordLineEdit->setEchoMode(QLineEdit::Password);}
 
-void Login::on_passwordRegisterLineEdit_textChanged(const QString &Arg1)
-{
-    ui->passwordRegisterLineEdit->setEchoMode(QLineEdit::Password);
-}
 
-void Login::on_checkPasswordLineEdit_textChanged(const QString &Arg1)
-{
-    ui->checkPasswordLineEdit->setEchoMode(QLineEdit::Password);
-}

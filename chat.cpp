@@ -18,7 +18,13 @@ Chat::~Chat()
     delete ui;
 }
 
-void Chat::on_startServerButton_clicked()
+void Chat::setCurrentUsername(const QString &username)
+{
+    m_currentUsername = username;
+    ui->usernameLabel->setText(username);
+}
+
+void Chat::startServ()
 {
     network->startServer();
 }
@@ -26,36 +32,33 @@ void Chat::on_startServerButton_clicked()
 void Chat::on_connectButton_clicked()
 {
     QString ipAddress = ui->IPLineEdit->text();
-    int port = ui->portLineEdit->text().toInt();
-    network->connectToServer(ipAddress, port);
+    network->connectToServer(ipAddress);
 }
 
 QString Chat::formatMessage(const QString &username, const QString &message)
 {
-    QString formattedMessage = QString("[%1 - %2] %3").arg(username).arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")).arg(message);
+    QString formattedMessage = QString("%1 [%2]: %3").arg(username).arg(QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss")).arg(message);
     return formattedMessage;
 }
 
 void Chat::on_sendButton_clicked()
 {
     QString message = ui->messageLineEdit->text();
-    network->sendMessage(message);
 
-    QString formattedMessage = formatMessage("Ja", message); // Tutaj używamy "Ja" jako nazwy użytkownika dla wysłanych wiadomości
+    QString formattedMessage = formatMessage(m_currentUsername, message);
+    network->sendMessage(formattedMessage);
     ui->chatTextEdit->append(formattedMessage);
-
-    // Czyszczenie pola tekstowego po wysłaniu wiadomości
     ui->messageLineEdit->clear();
 }
 
-void Chat::handleMessageReceived(const QString &sender, const QString &message)
+void Chat::handleMessageReceived(const QString &message)
 {
-    QString formattedMessage = formatMessage(sender, message);
-    ui->chatTextEdit->append(formattedMessage);
+    ui->chatTextEdit->append(message);
 }
 
 void Chat::on_addNewFriendPushButton_clicked()
 {
+    ui->listWidget->clear();
     DataBase db;
     QString newFriendUsername = ui->addNewFriendTextEdit->toPlainText();
     QString newFriendIP = db.findNewFriend(newFriendUsername);
@@ -63,13 +66,13 @@ void Chat::on_addNewFriendPushButton_clicked()
     QMessageBox msg;
     if(newFriendIP == "")
     {
-        msg.setText("Nie znaleziono takiego uzytkownika");
+        msg.setText("Nie znaleziono takiego użytkownika");
         msg.setIcon(QMessageBox::Warning);
         msg.exec();
     }
     else
     {
-    QString information = QString("Dodano uzytkownika %1 o numerze ip: %2 do listy kontaktow").arg(newFriendUsername).arg(newFriendIP);
+    QString information = QString("Dodano użytkownika %1 o adresie ip: %2 do listy kontaktów").arg(newFriendUsername).arg(newFriendIP);
     msg.setInformativeText(information);
     msg.setIcon(QMessageBox::Information);
     msg.exec();
@@ -88,7 +91,7 @@ void Chat::on_addNewFriendPushButton_clicked()
         for(int i =0;i<listOfUsers.size();i++)
         {
 
-        QString info = listOfUsers.at(i).m_username + ":" + listOfUsers.at(i).m_ip;
+        QString info = listOfUsers.at(i).m_username + ": " + listOfUsers.at(i).m_ip;
         QListWidgetItem *Item = new QListWidgetItem(info);
         Item->setData(Qt::UserRole, QVariant::fromValue(listOfUsers.at(i)));
         ui->listWidget->addItem(Item);
@@ -96,13 +99,20 @@ void Chat::on_addNewFriendPushButton_clicked()
         }
     }
     }
+    ui->addNewFriendTextEdit->clear();
 }
 
 void Chat::on_listWidget_itemClicked(QListWidgetItem *item)
 {
+    DataBase db;
     QString selectedItem = item->text();
     QStringList parts = selectedItem.split(":");
     QString friendUsername = parts[0];
     QString friendIP = parts[1];
+    qDebug() << friendUsername << " " <<friendIP;
+    m_currentClient = friendUsername;
+    network->connectToServer(friendIP);
+    ui->chatTextEdit->clear();
 }
+
 

@@ -1,4 +1,3 @@
-#include "chat.h"
 #include "login.h"
 
 #include <QApplication>

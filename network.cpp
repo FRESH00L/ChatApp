@@ -1,7 +1,6 @@
 #include "network.h"
-#include <QErrorMessage>
+#include "qmessagebox.h"
 #include <QDebug>
-
 
 Network::Network(QObject *parent) : QObject(parent)
 {
@@ -18,20 +17,22 @@ void Network::startServer()
     }
 }
 
-void Network::connectToServer(const QString &ipAddress, int port)
+void Network::connectToServer(const QString &ipAddress)
 {
     QHostAddress address(ipAddress);
+    QMessageBox msg;
     if (address.isNull() || ipAddress.isEmpty()) {
-        QErrorMessage errorMessage;
-        errorMessage.showMessage("Invalid IP Address");
-        errorMessage.exec();
+        msg.setText("Niepoprawny adres IP");
+        msg.setIcon(QMessageBox::Warning);
+        msg.exec();
         return;
     }
 
     tcpSocket = new QTcpSocket(this);
     connect(tcpSocket, &QTcpSocket::readyRead, this, &Network::readMessage);
-    connect(tcpSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)), this, SLOT(handleSocketError(QAbstractSocket::SocketError))); // Poprawione połączenie
-    tcpSocket->connectToHost(ipAddress, port);
+    connect(tcpSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)), this, SLOT(handleSocketError(QAbstractSocket::SocketError)));
+    tcpSocket->connectToHost(ipAddress, 1234);
+
 }
 
 void Network::sendMessage(const QString &message)

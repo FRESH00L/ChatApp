@@ -12,6 +12,8 @@ class Login;
 class DataBase : public QObject
 {
     Q_OBJECT
+signals:
+
 public:
     explicit DataBase(QObject *parent = nullptr);
     ~DataBase();
@@ -19,7 +21,6 @@ public:
     void closeconnection();
     void addUser(QString,QString);
     bool checkLogin(const QString& _username, const QString& _password);
-    QString getCurrentUsername() const;
     QString findNewFriend(QString);
 private:
     QString currentUsername;

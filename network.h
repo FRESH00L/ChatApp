@@ -16,7 +16,7 @@ signals:
 
 public slots:
     void startServer();
-    void connectToServer(const QString &ipAddress, int port);
+    void connectToServer(const QString &ipAddress);
     void sendMessage(const QString &message);
     void handleNewConnection();
     void handleSocketError(QAbstractSocket::SocketError socketError);

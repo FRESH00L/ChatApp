@@ -1,5 +1,4 @@
 #include "database.h"
-#include "chat.h"
 #include <QCryptographicHash>
 
 DataBase::DataBase(QObject *parent)
@@ -11,13 +10,7 @@ DataBase::DataBase(QObject *parent)
 
     if(!openconnection())
         qDebug()<<"! -- Błąd połączenia z Bazą Danych " <<db.lastError().text();
-    qDebug()<<"info - Konstruktor DataBase - Close";
-}
-
-QString DataBase::getCurrentUsername() const
-{
-    qDebug() << "info - getCurrentUsername - Returning: " << currentUsername;
-    return currentUsername;
+        qDebug()<<"info - Konstruktor DataBase - Close";
 }
 
 void DataBase::closeconnection()
@@ -28,6 +21,7 @@ void DataBase::closeconnection()
 DataBase::~DataBase()
 {
     closeconnection();
+    qDebug() << "info - connection closed";
 }
 
 bool DataBase::openconnection()
@@ -62,7 +56,6 @@ void DataBase::addUser(QString _user, QString _password)
             break;
         }
     }
-    qDebug() << ipAddress;
     query.exec("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, ip TEXT)");
     query.prepare("INSERT INTO users (username, password, ip) VALUES (:username, :password, :ip)");
     query.bindValue(":username", _user);
@@ -85,7 +78,6 @@ bool DataBase::checkLogin(const QString& _username, const QString& _password)
     query.bindValue(":password",hashedPassword);
     if(query.exec() && query.next())
     {
-        currentUsername = _username;qDebug() << "info - Funkcja checkLogin - Username set: " << currentUsername;
         qDebug() << "info - Funkcja checkLogin - Close";
         return true;
     }
