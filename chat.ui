@@ -33,6 +33,13 @@ QLineEdit#IPLineEdit {
     transition: background-color 0.3s, border-color 0.3s;
 }
 
+/* Style the QLineEdit for entering messages */
+QLineEdit#portLineEdit {
+    background-color: #C0C0C0;
+    border: 3px solid #808080;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
 /* LineEdit hover effect */
 QLineEdit#messageLineEdit:hover,
 QLineEdit#IPLineEdit:hover {
@@ -40,9 +47,21 @@ QLineEdit#IPLineEdit:hover {
     border-color: #555555;
 }
 
+/* LineEdit hover effect */
+QLineEdit#portLineEdit:hover {
+    background-color: #D3D3D3;
+    border-color: #555555;
+}
+
 /* LineEdit active effect */
 QLineEdit#messageLineEdit:focus,
 QLineEdit#IPLineEdit:focus {
+    background-color: #FFFFFF;
+    border-color: #000000;
+}
+
+/* LineEdit active effect */
+QLineEdit#portLineEdit:focus {
     background-color: #FFFFFF;
     border-color: #000000;
 }
@@ -506,7 +525,7 @@ znajomego</string>
      <x>0</x>
      <y>0</y>
      <width>1001</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
